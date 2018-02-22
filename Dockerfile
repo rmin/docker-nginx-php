@@ -1,20 +1,17 @@
 FROM ubuntu:16.04
-MAINTAINER https://github.com/rmin
+MAINTAINER Armin Ranjbar Daemi https://github.com/rmin
 
 RUN apt-get update && apt-get install -y \
 	unzip \
-    curl \
-    git \
-    nginx \
-    php-curl \
-    php-fpm \
-	php-mysql \
-	php-mcrypt \
-	php-json \
+	curl \
+	git \
+	nginx \
+	php-fpm \
+	php-mbstring \
+	php-dom \
+	php-xdebug \
 	php-xml \
-	php-xmlrpc \
-	phpunit \
- 	&& rm -rf /var/lib/apt/lists/*
+	&& rm -rf /var/lib/apt/lists/*
 
 # install composer, turn off daemon mode for nginx and php-fpm, set some php vars
 # make sure nginx sends errors and access logs into stderr and stdout
@@ -33,6 +30,11 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # copy web app into the container
 COPY ./application/ /var/www/
 COPY ./nginx-default /etc/nginx/sites-available/default
+
+# install phpunit and run the tests
+WORKDIR /var/www
+RUN composer require phpunit/phpunit ^6.5 --no-progress --no-scripts --no-interaction
+RUN ./vendor/bin/phpunit
 
 EXPOSE 80
 CMD service php7.0-fpm start && nginx
