@@ -29,3 +29,8 @@ Docker Image is available on Docker Hub [rmin/docker-nginx-php](https://hub.dock
 ```
 docker run -p 80:80/tcp rmin/docker-nginx-php
 ```
+
+## License
+MIT License
+
+Copyright (c) 2018 @rmin
